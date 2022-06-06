@@ -10,3 +10,5 @@ app.listen(PORT, () => {
 });
 
 app.use('/users', require('./routes/users'))
+app.use('/users/:usersId', require('./rourers/:usersId'));
+app.use('/users', require('./rourers/users'))
