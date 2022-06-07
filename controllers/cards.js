@@ -1,25 +1,25 @@
-const User = require('../models/user');
+const Card = require('../models/cards');
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+module.exports.createCard = (req, res) => {
+  const { name, link } = req.body;
 
-  User.create({name, about, avatar})
+  Card.create({ name, link })
     .then((user) => res.send(user))
     .catch(() => res.status(500).send({ message: `Что то пошло не так` }))
 }
 
-module.exports.getUsers = (_req, res) => {
+module.exports.getCards = (_req, res) => {
 
-  User.find({})
+  Card.find({})
     .then(users => res.send({ data: users }))
     .catch(() => res.status(500).send({ message: `Что то пошло не так` }))
 }
 
-module.exports.getUserId = (req, res) => {
+module.exports.getCardId = (req, res) => {
 
-  User.findById(req.params.userId)
-    .then((user) =>{
-      if(!user) {
+  Card.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
         res.status(500).send({ message: `Что то пошло не так` });
         return
       }
