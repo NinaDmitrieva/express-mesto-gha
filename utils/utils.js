@@ -4,33 +4,24 @@ const BadRequest = 400;
 
 module.exports.incorrectData = (err, res) => {
   if (err.name === 'ValidationError') {
-    res.status(BadRequest).send({ message: `Введены некорректные данные: ${err.message}` });
-    return
+    return res.status(BadRequest).send({ message: `Введены некорректные данные: ${err.message}` });
   };
   if (err.name === 'CastError') {
-    res.status(NotFound).send({ message: `Данные не обнаружены: ${err.message}` });
-    return
+    return res.status(NotFound).send({ message: `Данные не обнаружены: ${err.message}` });
   };
   res.status(InternalServerError).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
 };
 
 module.exports.notFoundItem = (item, res) => {
   if (item === null) {
-    res.status(NotFound).send({ message: `Такой объект отсутствует` });
-    return
+    return res.status(NotFound).send({ message: `Такой объект отсутствует` });
   }
   res.send({ data: item });
 }
 
 module.exports.notFoundItemId = (_req, res, _id, err) => {
-  if (`req.params.${id}.length` !== 24) {
-    res.status(NotFound).send({ message: `Введен некорректный ID` });
-    return
+  if (`req.params.${_id}.length` !== 24) {
+    return res.status(NotFound).send({ message: `Введен некорректный ID` });
   }
-  incorrectData({ err, res});
+  incorrectData({ err, res });
 }
-
-
-// 400 — переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля;
-// 404 — карточка или пользователь не найден.
-// 500 — ошибка по - умолчанию.
