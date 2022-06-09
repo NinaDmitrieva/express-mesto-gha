@@ -18,7 +18,7 @@ module.exports.getUsers = (_req, res) => {
 
 module.exports.getUserId = (req, res) => {
   User.findOne(req.params.userId)
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((user) => notFoundItemId(user, res));
 };
 
