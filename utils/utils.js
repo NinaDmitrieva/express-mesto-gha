@@ -22,6 +22,14 @@ module.exports.notFoundItem = (item, res) => {
   res.send({ data: item });
 }
 
+module.exports.notFoundItemId = (_req, res, _id, err) => {
+  if (`req.params.${id}.length` !== 24) {
+    res.status(NotFound).send({ message: `Введен некорректный ID` });
+    return
+  }
+  incorrectData({ err, res});
+}
+
 
 // 400 — переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля;
 // 404 — карточка или пользователь не найден.
