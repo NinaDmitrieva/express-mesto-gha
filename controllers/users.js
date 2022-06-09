@@ -1,4 +1,4 @@
-const { incorrectData, notFoundItem, notFoundItemId } = require('../utils/utils');
+const { incorrectData, notFoundItemId } = require('../utils/utils');
 
 const User = require('../models/user');
 
@@ -18,8 +18,8 @@ module.exports.getUsers = (_req, res) => {
 
 module.exports.getUserId = (req, res) => {
   User.findOne(req.params.userId)
-    .then((user) => notFoundItemId(user, res))
-    .catch((err) => notFoundItem(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((user) => notFoundItemId(user, res));
 };
 
 module.exports.updateUser = (req, res) => {

@@ -20,14 +20,17 @@ module.exports.deleteCardId = (req, res) => {
     .then((card) => {
       notFoundItemId(req, res, _id);
       notFoundItem(card, res);
+      res.send(card);
     })
     .catch((err) => incorrectData(err, res));
 };
 
 module.exports.likeCard = (req, res) => {
+  const { _id } = req.user;
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       res.send(card);
+      notFoundItemId(req, res, _id);
     })
     .catch((err) => incorrectData(err, res));
 };

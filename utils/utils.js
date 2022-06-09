@@ -21,7 +21,7 @@ module.exports.notFoundItem = (item, res) => {
 
 module.exports.notFoundItemId = (_req, res, _id, err) => {
   if (`req.params.${_id}.length` !== 24) {
-    return res.status(NotFound).send({ message: 'Введен некорректный ID' });
+    return res.status(BadRequest).send({ message: 'Введен некорректный ID' });
   }
-  return res.status(BadRequest).send({ err, res });
+  return res.status(NotFound).send({ err, res });
 };
