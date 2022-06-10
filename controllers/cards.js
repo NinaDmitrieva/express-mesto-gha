@@ -23,7 +23,7 @@ module.exports.deleteCardId = (req, res) => {
   Card.findOneAndDelete(_id)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Карточка не отсутствует' });
+        res.status(400).send({ message: 'Карточка не отсутствует' });
         return;
       }
       res.send(card);
