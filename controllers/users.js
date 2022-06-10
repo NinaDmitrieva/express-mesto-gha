@@ -7,16 +7,16 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };
 
 module.exports.getUsers = (_req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' }));
 };
 
 module.exports.getUserId = (req, res) => {
@@ -30,13 +30,10 @@ module.exports.getUserId = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
-      }
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };
 
@@ -48,7 +45,10 @@ module.exports.updateUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };
 
@@ -60,6 +60,9 @@ module.exports.updateUserAvatar = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };

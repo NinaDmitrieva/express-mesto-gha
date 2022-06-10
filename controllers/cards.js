@@ -8,14 +8,14 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };
 
 module.exports.getCards = (_req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' }));
 };
 
 module.exports.deleteCardId = (req, res) => {
@@ -30,12 +30,12 @@ module.exports.deleteCardId = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные:${err.message}` });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные:${err.message}` });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };
 
@@ -52,7 +52,7 @@ module.exports.likeCard = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введен некорректный ID' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };
 
@@ -69,6 +69,6 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введен некорректный ID' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
 };
