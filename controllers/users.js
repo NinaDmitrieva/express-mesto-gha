@@ -26,7 +26,7 @@ module.exports.getUserId = (req, res) => {
         res.status(404).send({ message: 'Такого пользователя нет' });
         return;
       }
-      res.send(user);
+      res.send('{data: user}');
     })
     .catch((err) => {
       if (err.name === 'CastError') {

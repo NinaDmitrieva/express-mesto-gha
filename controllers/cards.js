@@ -19,7 +19,8 @@ module.exports.getCards = (_req, res) => {
 };
 
 module.exports.deleteCardId = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  const { _id } = req.user;
+  Card.findOneAndDelete(_id)
     .then((card) => {
       if (!card) {
         res.status(400).send({ message: 'Карточка не отсутствует' });
