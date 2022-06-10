@@ -5,7 +5,7 @@ module.exports.incorrectData = (err, res) => {
   if (err.name === 'CastError') {
     return res.status(400).send({ message: `Данные не обнаружены: ${err.message}` });
   }
-  return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+  return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
 };
 
 module.exports.notFoundItem = (item, res) => {

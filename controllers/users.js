@@ -9,14 +9,14 @@ module.exports.createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
     });
 };
 
 module.exports.getUsers = (_req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` }));
+    .catch((err) => res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` }));
 };
 
 module.exports.getUserId = (req, res) => {
@@ -28,7 +28,12 @@ module.exports.getUserId = (req, res) => {
       }
       res.send(user);
     })
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
+    });
 };
 
 module.exports.updateUser = (req, res) => {
@@ -39,7 +44,7 @@ module.exports.updateUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
     });
 };
 
@@ -51,6 +56,6 @@ module.exports.updateUserAvatar = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
     });
 };

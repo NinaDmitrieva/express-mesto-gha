@@ -8,14 +8,14 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
-      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
     });
 };
 
 module.exports.getCards = (_req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` }));
+    .catch((err) => res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` }));
 };
 
 module.exports.deleteCardId = (req, res) => {
@@ -32,7 +32,7 @@ module.exports.deleteCardId = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введен некорректный ID' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
     });
 };
 
@@ -49,7 +49,7 @@ module.exports.likeCard = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введен некорректный ID' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
     });
 };
 
@@ -66,6 +66,6 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введен некорректный ID' });
       }
-      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+      return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
     });
 };
