@@ -29,12 +29,22 @@ module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
+      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+    });
 };
 
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
+      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+    });
 };
