@@ -5,7 +5,12 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
+      return res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` });
+    });
 };
 
 module.exports.getUsers = (_req, res) => {
