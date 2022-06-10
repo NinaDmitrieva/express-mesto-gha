@@ -20,16 +20,19 @@ module.exports.getUsers = (_req, res) => {
 };
 
 module.exports.getUserId = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId)
-    .then((user) => res.send({ data: user }))
+  const { usersId } = req.params;
+  User.findById(usersId)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Такого пользователя нет' });
+        res.status(404).send({ message: 'Такого пользователя нет' });
+        return;
       }
-      return res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Введены некорректные данные' });
+      }
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
