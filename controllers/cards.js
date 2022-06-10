@@ -43,7 +43,7 @@ module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Карточка не отсутствует' });
+        res.status(404).send({ message: 'Карточка отсутствует' });
         return;
       }
       res.send(card);
@@ -60,7 +60,7 @@ module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Карточка не отсутствует' });
+        res.status(404).send({ message: 'Карточка отсутствует' });
         return;
       }
       res.send(card);
