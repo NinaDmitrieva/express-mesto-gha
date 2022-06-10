@@ -20,35 +20,20 @@ module.exports.getUsers = (_req, res) => {
 };
 
 module.exports.getUserId = (req, res) => {
-  User.findOne(req.params.userId)
+  const { userId } = req.params;
+  User.findById(userId)
+    .then((user) => res.send({ data: user }))
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Такого пользователя нет' });
-        return;
+        return res.status(404).send({ message: 'Такого пользователя нет' });
       }
-      return res.send(user);
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
       }
       return res.status(500).send({ message: `Произошла ошибка, попробуйте еще раз: ${err.message}` });
-    });
-};
-const getUserById = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        return res.status(ERR_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
-      }
-      return res.send({ data: user });
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(ERR_BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
-      }
-      return res.status(ERR_DEFAULT).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
