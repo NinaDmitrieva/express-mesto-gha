@@ -30,7 +30,7 @@ module.exports.deleteCardId = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(404).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: 'Введены некорректные данные' });
       }
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Введены некорректные данные' });
