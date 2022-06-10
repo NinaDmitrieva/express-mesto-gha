@@ -21,7 +21,13 @@ module.exports.getUsers = (_req, res) => {
 
 module.exports.getUserId = (req, res) => {
   User.findOne(req.params.userId)
-    .then((user) => res.send(user))
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Такого пользователя нет' });
+        return;
+      }
+      res.send(user);
+    })
     .catch((err) => res.status(500).send({ message: `Произошла ошибка, где то рыдает разработчик: ${err.message}` }));
 };
 
