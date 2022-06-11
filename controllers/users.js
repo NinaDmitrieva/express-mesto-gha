@@ -31,7 +31,7 @@ module.exports.getUserId = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
       return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
@@ -40,13 +40,18 @@ module.exports.getUserId = (req, res) => {
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: 'Такого пользователя нет' });
+      }
+      return res.send({ data: user });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
       return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
@@ -58,10 +63,10 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Введены некорректные данные' });
+        return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
       }
       return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
     });
