@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -8,14 +9,7 @@ const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/mestodb', { useNewUrlParser: true, family: 4 });
 
 app.use(bodyParser.json());
-
-app.use((req, _res, next) => {
-  req.user = {
-    _id: '62a0b4099b36a2e050c1d51f',
-  };
-
-  next();
-});
+app.use(cookieParser());
 
 app.use(require('./routes/users'));
 app.use(require('./routes/cards'));

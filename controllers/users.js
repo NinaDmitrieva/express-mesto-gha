@@ -1,22 +1,68 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const user = require('../models/user');
-const User = require('../models/user'); "добавлен email, passw; доработан createUser; создан роут для логина.JWT в процессе" 
+const User = require('../models/user');
+
+const JWT = 'SECRET_KEY'
 
 module.exports.createUser = (req, res) => {
   const { email, password } = req.body;
-  bcrypt.hash(password, 10)
-    .then(hash => User.create({
-      email: email,
-      password: hash
-    }))
-    .then((user) => res.send(user))
-    const token = jwt.sign({id: user.id},)//попытка токена, тут нужен ключ и срок годности токена
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
+
+  User.findOne({email})
+    .select('+password')
+    .then((user) => {
+      if (user) {
+        return res.status(403).send({message:'Такой пользователь уже существует'})
+      } else {
+        bcrypt.hash(password, 10)
+          .then(hash => User.create({
+            email: email,
+            password: hash
+          }))
+          .then((user) => res.send({
+            name: user.name,
+            email: user.email
+          }))
+          .catch((err) => {
+            if (err.name === 'ValidationError') {
+              return res.status(400).send({ message: `Введены некорректные данные: ${err.message}` });
+            }
+            return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
+          });
       }
-      return res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' });
+    })
+};
+
+module.exports.login = (req, res) => {
+  const { email, password, id } = req.body;
+
+  User.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        return res.status(401).send({ message: 'Неправильные почта или пароль' })
+      }
+      if (!email || !password) {
+        return res.status(403).send({ message: 'Оба поля обязательны для заполнения' })
+      }
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        return res.status(401).send({ message: 'Неправильные почта или пароль' })
+      }
+      const token = jwt.sign({
+        id: user._id
+      }, JWT)
+
+      return res
+        .cookie('jwt', token, {
+          httpOnly: true
+        })
+        .send({ message: 'Всё верно!' });
+    })
+    .catch((err) => {
+      return res.status(401).send({ message: `Введены некорректные данные: ${err.message}` });
     });
 };
 
@@ -84,30 +130,7 @@ module.exports.updateUserAvatar = (req, res) => {
     });
 };
 
-module.exports.login = (req, res) => {
-  const { email, password } = req.body;
-
-  User.findOne({ email })
-    .then((user) => {
-      if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
-      res.send({ message: 'Всё верно!' });
-    })
-    .catch((err) => {
-      return res.status(401).send({ message: err.message });
-    });
-};
-
 module.exports.getUserInfo = (req, res) => {
-  //проверить что это текущий пользователь,
-  //если это он то
     User.find({})
       .then((users) => res.send({ data: users }))
       .catch(() => res.status(500).send({ message: 'Произошла ошибка, попробуйте еще раз' }));
