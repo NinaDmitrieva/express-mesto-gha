@@ -1,24 +1,25 @@
 const jwt = require('jsonwebtoken');
-const JWT = 'SECRET_KEY'
+
+const JWT = 'SECRET_KEY';
 
 const auth = (req, res, next) => {
-  const cookies = req.cookies;
+  const { cookies } = req;
 
-  if(!cookies) {
-    next(res.status(401).send({error: 'Вы НЕ прошли авторизацию'}))
+  if (!cookies) {
+    next(res.status(401).send({ error: 'Вы НЕ прошли авторизацию' }));
   } else {
     const token = cookies.jwt;
     let payload;
 
     try {
-      payloade = jwt.verify(token, JWT)
+      payload = jwt.verify(token, JWT);
     } catch (err) {
-      next(res.status(401).send({ error: 'Вы НЕ прошли авторизацию' }))
+      next(res.status(401).send({ error: 'Вы НЕ прошли авторизацию' }));
     }
 
     req.user = payload;
-    next()
+    next();
   }
-}
+};
 
-module.exports = auth
+module.exports = auth;
