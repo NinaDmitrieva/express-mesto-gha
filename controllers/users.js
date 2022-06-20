@@ -2,13 +2,18 @@
 /* eslint-disable no-shadow */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const user = require('../models/user');
 const User = require('../models/user');
 
 const JWT = 'SECRET_KEY';
 
 module.exports.createUser = (req, res) => {
-  const { email, password } = req.body;
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
 
   User.findOne({ email })
     .select('+password')
@@ -18,11 +23,17 @@ module.exports.createUser = (req, res) => {
       }
       bcrypt.hash(password, 10)
         .then((hash) => User.create({
+          name,
+          about,
+          avatar,
           email,
           password: hash,
         }))
         .then((user) => res.status(200).send({
           name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          id: user._id,
           email: user.email,
         }))
         .catch((err) => {
@@ -53,7 +64,7 @@ module.exports.login = (req, res) => {
         return res.status(401).send({ message: 'Неправильные почта или пароль' });
       }
       const token = jwt.sign({
-        id: user._id,
+        _id: User._id,
       }, JWT);
 
       return res
