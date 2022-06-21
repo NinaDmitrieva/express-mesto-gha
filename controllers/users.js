@@ -25,31 +25,35 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => {
       if (user) {
         throw new ConflictError('Такой пользователь уже существует');
+      } else {
+        bcrypt.hash(password, 10)
+          .then((hash) => User.create({
+            name,
+            about,
+            avatar,
+            email,
+            password: hash,
+          }))
+          .then((user) => res.status(201).send({
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            id: user._id,
+            email: user.email,
+          }))
+          .catch((err) => {
+            if (err.name === 'ValidationError') {
+              next(new BadReqError('Введены некорректные данные'));
+            }
+            if (err.code === 11000) {
+              next(new ConflictError('Такой пользователь есть, вероятно это вы)'));
+            }
+            next(err);
+          });
       }
-      bcrypt.hash(password, 10)
-        .then((hash) => User.create({
-          name,
-          about,
-          avatar,
-          email,
-          password: hash,
-        }))
-        .then((user) => res.status(201).send({
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          id: user._id,
-          email: user.email,
-        }))
-        .catch((err) => {
-          if (err.name === 'ValidationError') {
-            throw new BadReqError('Введены некорректные данные');
-          }
-          if (err.code === 11000) {
-            throw new ConflictError('Такой пользователь есть, вероятно это вы)');
-          }
-          next(err);
-        });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 
