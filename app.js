@@ -6,7 +6,7 @@ const { errors, celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/NotFoundError');
-const ServerError = require('./middlewares/ServerError');
+const handleErrors = require('./middlewares/handleErrors');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -43,6 +43,6 @@ app.all('*', () => {
 });
 
 app.use(errors());
-app.use(ServerError);
+app.use(handleErrors);
 
 app.listen(PORT);

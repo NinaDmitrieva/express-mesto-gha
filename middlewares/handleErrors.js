@@ -1,4 +1,4 @@
-function ServerError(err, req, res, next) {
+function handleErrors(err, req, res, next) {
   const { statusCode = 500, message } = err;
 
   res.status(statusCode)
@@ -10,4 +10,4 @@ function ServerError(err, req, res, next) {
   next();
 }
 
-module.exports = ServerError;
+module.exports = handleErrors;

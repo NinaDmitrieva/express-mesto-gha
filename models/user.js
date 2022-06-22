@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const AuthError = require('../errors/AuthError');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: 'Жак-Ив Кусто',
-    minlength: [2, 'Имя должно содержать больше 2 символов'],
-    maxlength: [30, 'Слишком длинное имя, уложитесь в 30 символов'],
+    minlength: 2,
+    maxlength: 30,
   },
   about: {
     type: String,
     default: 'Исследователь',
-    minlength: [2, 'Данное поле должно содержать не менее 2 символов'],
-    maxlength: [30, 'Данное поле должно содержать не более 30 символов'],
+    minlength: 2,
+    maxlength: 30,
   },
   avatar: {
     type: String,
@@ -41,18 +43,16 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email })
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        throw new AuthError('Неправильные почта или пароль');
       }
-
-      // eslint-disable-next-line no-undef
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Неправильные почта или пароль'));
+            throw new AuthError('Неправильные почта или пароль');
           }
 
           return user;

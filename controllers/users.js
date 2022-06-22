@@ -6,7 +6,6 @@ const User = require('../models/user');
 const AuthError = require('../errors/AuthError');
 const BadReqError = require('../errors/BadReqError');
 const ConflictError = require('../errors/ConflictError');
-const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 
 const JWT = 'SECRET_KEY';
@@ -60,38 +59,22 @@ module.exports.createUser = (req, res, next) => {
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findOne({ email })
-    .select('+password')
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        throw new AuthError('Неправильные почта или пароль');
-      }
-      if (!email || !password) {
-        throw new ForbiddenError('Оба поля обязательны для заполнения');
-      }
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        throw new AuthError('Неправильные почта или пароль');
-      }
-      const token = jwt.sign({
-        _id: req.user._id,
-      }, JWT, {
-        expiresIn: '7d',
-      });
-
-      return res
-        .cookie('jwt', token, {
-          httpOnly: true,
-          maxAge: 3600000 * 24 * 7,
-        })
+      const token = jwt.sign(
+        { _id: user._id },
+        JWT,
+        { expiresIn: '7d' },
+      );
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: 3600000 * 24 * 7,
+      })
         .send({ token });
     })
     .catch(() => {
-      throw new AuthError('Введены некорректные данные');
-    })
-    .cath(next);
+      next(new AuthError('Ошибка авторизации'));
+    });
 };
 
 module.exports.getUsers = (req, res, next) => {
