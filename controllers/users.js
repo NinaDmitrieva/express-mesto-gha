@@ -73,7 +73,7 @@ module.exports.login = (req, res, next) => {
         .send({ token });
     })
     .catch(() => {
-      next(new AuthError('Ошибка авторизации'));
+      next(new AuthError('Ошибка доступа'));
     });
 };
 

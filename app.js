@@ -16,7 +16,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', { useNewUrlParser: true, f
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.post('/singin', celebrate({
+app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
