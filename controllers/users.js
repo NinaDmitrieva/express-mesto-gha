@@ -33,12 +33,12 @@ module.exports.createUser = (req, res, next) => {
             email,
             password: hash,
           }))
-          .then((user) => res.status(201).send({
-            name: user.name,
-            about: user.about,
-            avatar: user.avatar,
-            id: user._id,
-            email: user.email,
+          .then((userData) => res.send({
+            name: userData.name,
+            about: userData.about,
+            avatar: userData.avatar,
+            id: userData._id,
+            email: userData.email,
           }))
           .catch((err) => {
             if (err.name === 'ValidationError') {
@@ -80,26 +80,18 @@ module.exports.login = (req, res, next) => {
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.getUserId = (req, res, next) => {
-  const { usersId } = req.params;
-  User.findById(usersId)
+  User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Такого пользователя нет');
+        return next(new NotFoundError('Такого пользователя нет'));
       }
-      res.send(user);
+      return res.send({ user });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadReqError('Введены некорректные данные');
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {

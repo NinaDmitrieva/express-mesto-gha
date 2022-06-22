@@ -10,7 +10,7 @@ const {
 
 router.get('/users', getUsers);
 router.get('/users/me', getUserInfo); // информация о текущем пользователе
-router.get('/users/:usersId', celebrate({
+router.get('/users/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().hex().length(24).required(),
   }),
