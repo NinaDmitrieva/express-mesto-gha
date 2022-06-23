@@ -7,8 +7,7 @@ const AuthError = require('../errors/AuthError');
 const BadReqError = require('../errors/BadReqError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
-
-const JWT = 'SECRET_KEY';
+const { JWT } = require('../utils/const');
 
 module.exports.createUser = (req, res, next) => {
   const {

@@ -5,8 +5,8 @@ const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
-  const { owner } = req.user._id;
-  Card.create({ name, link, owner })
+  const { _id } = req.user;
+  Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
