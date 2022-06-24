@@ -19,7 +19,6 @@ module.exports.createUser = (req, res, next) => {
   } = req.body;
 
   User.findOne({ email })
-    .select('+password')
     .then((user) => {
       if (user) {
         throw new ConflictError('Такой пользователь уже существует');
