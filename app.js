@@ -17,6 +17,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', { useNewUrlParser: true, f
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+app.use(requestLogger);
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -42,6 +44,8 @@ app.use(require('./routes/cards'));
 app.all('*', () => {
   throw new NotFoundError('Страница не найдена');
 });
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors());
 app.use(handleErrors);
